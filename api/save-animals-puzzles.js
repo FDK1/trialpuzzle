@@ -1,24 +1,31 @@
 export default async function handler(req, res) {
+  // Habilita CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Responde a preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
-    return res.status(405).json({ success: false, message: 'Only POST allowed' });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
     const response = await fetch('https://puzzle-rate-012n12.replit.app/save-animals-puzzles', {
-      method: 'POST', // 👈 Esto es importante
+      method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(req.body),
+      body: JSON.stringify(req.body)
     });
 
-    const contentType = response.headers.get('content-type') || '';
-    const isJson = contentType.includes('application/json');
-    const data = isJson ? await response.json() : await response.text();
-
-    res.status(response.status).send(data);
+    const data = await response.json();
+    res.status(200).json(data);
   } catch (error) {
-    console.error("❌ Proxy error:", error);
-    res.status(500).json({ success: false, message: 'Proxy failed', error: error.message });
+    console.error('❌ Proxy error:', error);
+    res.status(500).json({ error: 'Failed to save animal puzzle' });
   }
 }
