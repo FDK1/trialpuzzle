@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch('https://puzzle-rate-012n12.replit.app/admin/clean-all-legacy');
+    const response = await fetch('https://puzzle-rate-012n12.replit.app/admin/clean-legacy-flags');
     const text = await response.text(); // Usamos .text() si no devuelve JSON
 
     res.status(200).send(text);
